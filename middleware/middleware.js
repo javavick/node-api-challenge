@@ -1,6 +1,7 @@
 const Projects = require("../data/helpers/projectModel.js");
 const Actions = require("../data/helpers/actionModel.js");
 
+// PROJECTS
 const validateProject = (req, res, next) => {
   if (!req.body.name || !req.body.description) {
     res
@@ -30,7 +31,22 @@ const validateProjectId = (req, res, next) => {
     );
 };
 
-validateActionId = (req, res, next) => {
+// ACTIONS
+const validateAction = (req, res, next) => {
+  if (!req.body.project_id || !req.body.description || !req.body.notes) {
+    res.status(400).json({
+      message: "Missing required notes, description, or project_id field."
+    });
+  } else if (req.body.description.length > 128) {
+    res
+      .status(400)
+      .json({ message: "Description must be 128 characters or less." });
+  } else {
+    next();
+  }
+};
+
+const validateActionId = (req, res, next) => {
   Actions.get(req.params.id)
     .then((action) => {
       if (!action) {
@@ -49,4 +65,9 @@ validateActionId = (req, res, next) => {
     );
 };
 
-module.exports = { validateProject, validateProjectId, validateActionId };
+module.exports = {
+  validateProject,
+  validateProjectId,
+  validateAction,
+  validateActionId
+};

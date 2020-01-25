@@ -3,7 +3,10 @@ const router = express.Router();
 // Data
 const Actions = require("../data/helpers/actionModel.js");
 // Middleware
-const { validateActionId } = require("../middleware/middleware.js");
+const {
+  validateAction,
+  validateActionId
+} = require("../middleware/middleware.js");
 
 // GET ("/actions")
 router.get("/", (req, res) => {
@@ -19,6 +22,32 @@ router.get("/", (req, res) => {
 // GET ("/actions/:id")
 router.get("/:id", validateActionId, (req, res) => {
   res.status(200).json(req.action);
+});
+
+// POST ("/actions")
+router.post("/", validateAction, (req, res) => {
+  Actions.insert(req.body)
+    .then((action) => res.status(201).json(action))
+    .catch(() =>
+      res.status(500).json({
+        error:
+          "There was an error when trying to add the action to the database."
+      })
+    );
+});
+
+// DELETE ("/actions/:id")
+router.delete("/:id", validateActionId, (req, res) => {
+  Actions.remove(req.params.id)
+    .then((num) =>
+      res.status(200).json({ message: `${num} record(s) deleted!` })
+    )
+    .catch(() =>
+      res.status(500).json({
+        error:
+          "There was an error when trying to delete the action from the database."
+      })
+    );
 });
 
 module.exports = router;
