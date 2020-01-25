@@ -1,4 +1,5 @@
 const Projects = require("../data/helpers/projectModel.js");
+const Actions = require("../data/helpers/actionModel.js");
 
 const validateProject = (req, res, next) => {
   if (!req.body.name || !req.body.description) {
@@ -29,4 +30,23 @@ const validateProjectId = (req, res, next) => {
     );
 };
 
-module.exports = { validateProject, validateProjectId };
+validateActionId = (req, res, next) => {
+  Actions.get(req.params.id)
+    .then((action) => {
+      if (!action) {
+        res
+          .status(404)
+          .json({ message: "The specified action does not exist." });
+      } else {
+        req.action = action;
+        next();
+      }
+    })
+    .catch(() =>
+      res
+        .status(500)
+        .json({ error: "The specified action could not be retrieved." })
+    );
+};
+
+module.exports = { validateProject, validateProjectId, validateActionId };
