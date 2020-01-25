@@ -5,7 +5,8 @@ const Actions = require("../data/helpers/actionModel.js");
 // Middleware
 const {
   validateAction,
-  validateActionId
+  validateActionId,
+  validateProjectId
 } = require("../middleware/middleware.js");
 
 // GET ("/actions")
@@ -25,7 +26,7 @@ router.get("/:id", validateActionId, (req, res) => {
 });
 
 // POST ("/actions")
-router.post("/", validateAction, (req, res) => {
+router.post("/", validateProjectId, validateAction, (req, res) => {
   Actions.insert(req.body)
     .then((action) => res.status(201).json(action))
     .catch(() =>
@@ -49,5 +50,22 @@ router.delete("/:id", validateActionId, (req, res) => {
       })
     );
 });
+
+// PUT ("/actions/:id")
+router.put(
+  "/:id",
+  validateProjectId,
+  validateAction,
+  validateActionId,
+  (req, res) => {
+    Actions.update(req.params.id, req.body)
+      .then((action) => res.status(200).json(action))
+      .catch(() =>
+        res.status(500).json({
+          error: "There was an error when trying to update the project."
+        })
+      );
+  }
+);
 
 module.exports = router;

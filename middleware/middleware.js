@@ -13,7 +13,7 @@ const validateProject = (req, res, next) => {
 };
 
 const validateProjectId = (req, res, next) => {
-  Projects.get(req.params.id)
+  Projects.get(req.body.project_id ? req.body.project_id : req.params.id)
     .then((project) => {
       if (!project) {
         res
