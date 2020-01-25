@@ -1,7 +1,12 @@
 const express = require("express");
-const Projects = require("../data/helpers/projectModel.js");
-
 const router = express.Router();
+// Data
+const Projects = require("../data/helpers/projectModel.js");
+// Middleware
+const {
+  validateProject,
+  validateProjectId
+} = require("../middleware/middleware.js");
 
 // GET ("/projects")
 router.get("/", (req, res) => {
@@ -13,21 +18,35 @@ router.get("/", (req, res) => {
 });
 
 // GET ("/projects/:id")
-router.get("/:id", (req, res) => {
-  Projects.get(req.params.id)
-    .then((project) => {
-      if (!project) {
-        res
-          .status(404)
-          .json({ message: "The specified project does not exist." });
-      } else {
-        res.status(200).json(project);
-      }
-    })
+router.get("/:id", validateProjectId, (req, res) => {
+  res.status(200).json(req.project);
+});
+
+// POST ("/projects")
+router.post("/", validateProject, (req, res) => {
+  Projects.insert(req.body)
+    .then((project) => res.status(200).json(project))
+    .catch(() =>
+      res.status(500).json({
+        error:
+          "There was an error when trying to add the project to the database."
+      })
+    );
+});
+
+// DELETE ("/projects")
+router.delete("/:id", validateProjectId, (req, res) => {
+  Projects.remove(req.params.id)
+    .then((num) =>
+      res.status(200).json({ message: `${num} record(s) deleted!` })
+    )
     .catch(() =>
       res
         .status(500)
-        .json({ error: "The specified project could not be retrieved." })
+        .json({
+          error:
+            "There was an error when trying to delete the project from the database."
+        })
     );
 });
 
