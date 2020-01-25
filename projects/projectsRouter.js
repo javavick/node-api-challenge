@@ -34,18 +34,29 @@ router.post("/", validateProject, (req, res) => {
     );
 });
 
-// DELETE ("/projects")
+// DELETE ("/projects/:id")
 router.delete("/:id", validateProjectId, (req, res) => {
   Projects.remove(req.params.id)
     .then((num) =>
       res.status(200).json({ message: `${num} record(s) deleted!` })
     )
     .catch(() =>
+      res.status(500).json({
+        error:
+          "There was an error when trying to delete the project from the database."
+      })
+    );
+});
+
+// PUT ("/projects/:id")
+router.put("/:id", validateProject, validateProjectId, (req, res) => {
+  Projects.update(req.params.id, req.body)
+    .then((project) => res.status(200).json(project))
+    .catch(() =>
       res
         .status(500)
         .json({
-          error:
-            "There was an error when trying to delete the project from the database."
+          error: "There was an error when trying to update the project."
         })
     );
 });
