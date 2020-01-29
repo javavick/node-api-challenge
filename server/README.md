@@ -40,13 +40,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+  - Routing and Middleware.
+
 - [ ] Describe Middleware?
+
+  - Middleware are functions that run during a server request lifecycle.
 
 - [ ] Describe a Resource?
 
+  - A resource is a file or data.
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+  - The API can return a successful status code (200 - 299).
+
 - [ ] How can we partition our application into sub-applications?
+
+  - Through the use of module importing and routing middleware to divide the API into different files based on URL paths.
 
 ## Minimum Viable Product
 
